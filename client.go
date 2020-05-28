@@ -1,8 +1,6 @@
 package main
 
-import (
-	models "github.com/10xcryptodev/dapi-client-go/Models"
-)
+import "github.com/10xcryptodev/dapi-client-go/models"
 
 func main() {
 
