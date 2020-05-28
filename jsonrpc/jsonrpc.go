@@ -15,12 +15,12 @@ type jsonRPCRequest struct {
 }
 
 type jsonRPCResponse struct {
-	jsonrpc string
-	id      int
-	result  json.RawMessage
-	error   *struct {
-		code    int
-		message string
+	Jsonrpc string          `json:"jsonrpc"`
+	Id      int             `json:"id"`
+	Result  json.RawMessage `json:"result"`
+	Error   *struct {
+		Code    int
+		Message string
 	}
 }
 
@@ -84,15 +84,15 @@ func RequestJSON(method string, params interface{}, response interface{}) error 
 		return err
 	}
 
-	if jsonRPCResponse.error != nil {
+	if jsonRPCResponse.Error != nil {
 		return fmt.Errorf("[ERROR] Recv JSON-RPC id #%d: [%d] %s\n",
-			jsonRPCResponse.id,
-			jsonRPCResponse.error.code,
-			jsonRPCResponse.error.message,
+			jsonRPCResponse.Id,
+			jsonRPCResponse.Error.Code,
+			jsonRPCResponse.Error.Message,
 		)
 	}
 
-	err = json.Unmarshal(jsonRPCResponse.result, response)
+	err = json.Unmarshal(jsonRPCResponse.Result, response)
 
 	if err != nil {
 		return err

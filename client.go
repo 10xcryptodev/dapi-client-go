@@ -8,7 +8,12 @@ import (
 )
 
 func main() {
-	fmt.Println(GetBestBlockHash())
+	bestBlock, err := GetBestBlockHash()
+	if err != nil {
+		fmt.Println("getBestBlockHash error: ", err)
+	} else {
+		fmt.Printf("getBestBlockHash: %s\n", string(*bestBlock))
+	}
 }
 
 func GetBestBlockHash() (*models.BestBlockHashResponse, error) {
