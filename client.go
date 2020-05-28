@@ -1,16 +1,21 @@
 package main
 
-import "github.com/10xcryptodev/dapi-client-go/models"
+import (
+	"fmt"
+
+	"github.com/10xcryptodev/dapi-client-go/jsonrpc"
+	"github.com/10xcryptodev/dapi-client-go/models"
+)
 
 func main() {
-
+	fmt.Println(GetBestBlockHash())
 }
 
-func getBestBlockHash() (*models.BestBlockHashResponse, error) {
+func GetBestBlockHash() (*models.BestBlockHashResponse, error) {
 	params := make(map[string][]string)
 
 	response := new(models.BestBlockHashResponse)
-	err := requestJSON(GetBestBlockHashMethod, params, &response)
+	err := jsonrpc.RequestJSON(jsonrpc.GetBestBlockHashMethod, params, &response)
 
 	if err != nil {
 		return nil, err

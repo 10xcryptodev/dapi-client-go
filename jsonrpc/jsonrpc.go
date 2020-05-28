@@ -1,4 +1,4 @@
-package rpc
+package jsonrpc
 
 import (
 	"bytes"
@@ -25,7 +25,7 @@ type jsonRPCResponse struct {
 }
 
 const (
-	server                  = "http://seed.evonet.networks.dash.org:3000/"
+	server                  = "http://seed.evonet.networks.dash.org:3000"
 	GetAddressSummaryMethod = "getAddressSummary"
 	GetBestBlockHashMethod  = "getBestBlockHash"
 	GetBlockHashMethod      = "getBlockHash"
@@ -49,7 +49,7 @@ func (r jsonRPCRequest) Serialize() ([]byte, error) {
 	return b, nil
 }
 
-func requestJSON(method string, params interface{}, response interface{}) error {
+func RequestJSON(method string, params interface{}, response interface{}) error {
 
 	request, err := (jsonRPCRequest{
 		id:     1,
