@@ -17,11 +17,11 @@ func main() {
 	}
 
 	height := 1
-	blockHash, err := GetBlockHash(height)
+	blockHashResponse, err := GetBlockHash(height)
 	if err != nil {
 		fmt.Printf("getBlockHash error: %s\n", err)
 	} else {
-		fmt.Printf("getBlockHash: %s\n", string(*blockHash))
+		fmt.Printf("getBlockHash: %s\n", string(*blockHashResponse))
 	}
 
 	address := []string{"yVs4HGmHgzP4t3gZ7KrpxRzCmkQcvZmczd", "ySnJVXXx9FtKUBTkovPaPPqCkTMNzDLPCu"}
@@ -34,6 +34,20 @@ func main() {
 			panic(err)
 		} else {
 			fmt.Printf("getAddressSummary: %s\n", string(out))
+		}
+	}
+
+	baseBlockHash := "5ad690bcbedeb8be47e840cd869485d802c9331488604d57a5a14e8e5db3129d"
+	blockHash := "0000018b02092f8b21ebbed244784191af95edd75a3b39262ff5e975c4addb2e"
+	getMnListDiff, err := GetMnListDiff(baseBlockHash, blockHash)
+	if err != nil {
+		fmt.Printf("getMnListDiff error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getMnListDiff)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getMnListDiff: %s\n", string(out))
 		}
 	}
 
@@ -63,7 +77,7 @@ func GetBestBlockHash() (*models.BestBlockHashResponse, error) {
 		return nil, err
 	}
 
-	return response, nil
+	return response, err
 }
 
 func GetBlockHash(height int) (*models.BlockHashResponse, error) {
@@ -72,6 +86,21 @@ func GetBlockHash(height int) (*models.BlockHashResponse, error) {
 
 	response := new(models.BlockHashResponse)
 	err := jsonrpc.RequestJSON(jsonrpc.GetBlockHashMethod, params, &response)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func GetMnListDiff(baseBlockHash string, blockHash string) (*models.MnListDiffResponse, error) {
+	params := make(map[string]string)
+	params["baseBlockHash"] = baseBlockHash
+	params["blockHash"] = blockHash
+
+	response := new(models.MnListDiffResponse)
+	err := jsonrpc.RequestJSON(jsonrpc.GetMnListDiffMethod, params, &response)
 
 	if err != nil {
 		return nil, err

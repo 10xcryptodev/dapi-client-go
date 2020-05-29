@@ -16,5 +16,37 @@ type AddressSummaryResponse struct {
 	TxAppearances           int
 	Transactions            []string
 }
+
 type BlockHashResponse string
 type BestBlockHashResponse string
+
+type NodeInfoResponse struct {
+	ProRegTxHash   string
+	ConfirmedHash  string
+	Service        string
+	PubKeyOperator string
+	VotingAddress  string
+	IsValid        bool
+}
+
+type QuorumInfoResponse struct {
+	Version           int
+	LLMQType          int
+	QuorumHash        string
+	SignersCount      int
+	ValidMembersCount int
+	QuorumPublicKey   string
+}
+
+type MnListDiffResponse struct {
+	BaseBlockHash     string
+	BlockHash         string
+	CbTxMerkleTree    string
+	CbTx              string
+	DeletedMNs        []NodeInfoResponse
+	MnList            []NodeInfoResponse
+	DeletedQuorums    []QuorumInfoResponse
+	NewQuorums        []QuorumInfoResponse
+	MerkleRootMNList  string
+	MerkleRootQuorums string
+}
