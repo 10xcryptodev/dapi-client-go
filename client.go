@@ -51,6 +51,24 @@ func main() {
 		}
 	}
 
+	UTXOparameter := new(models.UTXORequestParameter)
+	UTXOparameter.Addresses = []string{"yeVomBV7cQgdEqUsm3vWxQsLgrwqw7viRH", "yN7E9PWBT9c5NBJnzHBU3ZfwzFpQZG9Wpe"}
+	UTXOparameter.From = 0
+	UTXOparameter.To = 5
+	UTXOparameter.FromHeight = 5000
+	UTXOparameter.ToHeight = 20000
+	utxoResponse, err := GetUTXO(*UTXOparameter)
+	if err != nil {
+		fmt.Printf("getUTXO error: %s\n", err)
+	} else {
+		out, err := json.Marshal(utxoResponse)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getUTXO: %s\n", out)
+		}
+	}
+
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -101,6 +119,17 @@ func GetMnListDiff(baseBlockHash string, blockHash string) (*models.MnListDiffRe
 
 	response := new(models.MnListDiffResponse)
 	err := jsonrpc.RequestJSON(jsonrpc.GetMnListDiffMethod, params, &response)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func GetUTXO(parameter models.UTXORequestParameter) (*models.UTXOResponse, error) {
+	response := new(models.UTXOResponse)
+	err := jsonrpc.RequestJSON(jsonrpc.GetUTXOMethod, parameter, response)
 
 	if err != nil {
 		return nil, err

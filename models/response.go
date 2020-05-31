@@ -50,3 +50,21 @@ type MnListDiffResponse struct {
 	MerkleRootMNList  string
 	MerkleRootQuorums string
 }
+
+type UTXOItemResponse struct {
+	Address     string
+	Txid        string
+	OutputIndex int
+	Script      string
+	Satoshis    int64
+	Height      int
+}
+
+type UTXOResponse struct {
+	TotalItems int
+	From       int
+	To         int
+	FromHeight int
+	ToHeight   int
+	Items      []UTXOItemResponse
+}
