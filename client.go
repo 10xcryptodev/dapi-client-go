@@ -137,3 +137,5 @@ func GetUTXO(parameter models.UTXORequestParameter) (*models.UTXOResponse, error
 
 	return response, err
 }
+
+//gRPC
