@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
+
+	"github.com/10xcryptodev/dapi-client-go/grpc"
+	org_dash_platform_dapi_v0 "github.com/10xcryptodev/dapi-client-go/grpc/protos"
 
 	"github.com/10xcryptodev/dapi-client-go/jsonrpc"
 	"github.com/10xcryptodev/dapi-client-go/models"
@@ -66,6 +70,18 @@ func main() {
 			panic(err)
 		} else {
 			fmt.Printf("getUTXO: %s\n", out)
+		}
+	}
+
+	getStatus, err := GetStatus()
+	if err != nil {
+		fmt.Printf("getStatus error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getStatus)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getStatus: %s\n", out)
 		}
 	}
 
@@ -139,3 +155,21 @@ func GetUTXO(parameter models.UTXORequestParameter) (*models.UTXOResponse, error
 }
 
 //gRPC
+func GetStatus() (*org_dash_platform_dapi_v0.GetStatusResponse, error) {
+	gRPCconn, err := grpc.GetConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	coreClient := org_dash_platform_dapi_v0.NewCoreClient(gRPCconn)
+	request := new(org_dash_platform_dapi_v0.GetStatusRequest)
+	ctx := context.Background()
+	response, err := coreClient.GetStatus(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
