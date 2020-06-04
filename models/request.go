@@ -18,3 +18,7 @@ type SendTransactionParameter struct {
 	AllowHighFees bool   `json:"allow_high_fees,omitempty"`
 	BypassLimits  bool   `json:"bypass_limits,omitempty"`
 }
+
+type GetTransactionParameter struct {
+	Id string `json:"id"`
+}

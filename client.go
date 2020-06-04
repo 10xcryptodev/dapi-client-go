@@ -103,13 +103,27 @@ func main() {
 	sendTransactionParameter.Transaction = []byte("020000000123c52118bfc5da0222a569d379ce3e3a9ca18976175785fd45b3f8990341768b000000006b483045022100a3952306ccb38e1eb22d9956ab40744b79e3072621e634e19225ad8a15603e3102201a3724cb9a8216e78139793c953245b0890c207e13af86bb02735f50a5bccad9012103439cfc2b5fab7fe05c0fbf8fa9217707a5bf5badb7c7e6db05bd0fb1231c5c8bfeffffff0200e1f505000000001976a91468b39aad690ffb710b4ba522d742670b763b501988ac1ec34f95010000001976a91445ada709129f7b6381559c8a16f1ec83c0b3ca8c88acb4240000")
 	sendTransaction, err := SendTransaction(*sendTransactionParameter)
 	if err != nil {
-		fmt.Printf("sendTransaction erro: %s\n", err)
+		fmt.Printf("sendTransaction error: %s\n", err)
 	} else {
 		out, err := json.Marshal(sendTransaction)
 		if err != nil {
 			panic(err)
 		} else {
 			fmt.Printf("sendTransaction: %s\n", out)
+		}
+	}
+
+	getTransactionParameter := new(models.GetTransactionParameter)
+	getTransactionParameter.Id = "29b68163a22d89c14e24f1281cb4608b8dc7be05bc2604e2cecf8a85b1dede0d"
+	getTransaction, err := GetTransaction(*getTransactionParameter)
+	if err != nil {
+		fmt.Printf("getTransaction error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getTransaction)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getTransaction: %s\n", out)
 		}
 	}
 }
@@ -242,6 +256,25 @@ func SendTransaction(parameter models.SendTransactionParameter) (*org_dash_platf
 	request.BypassLimits = parameter.BypassLimits
 	ctx := context.Background()
 	response, err := coreClient.SendTransaction(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func GetTransaction(parameter models.GetTransactionParameter) (*org_dash_platform_dapi_v0.GetTransactionResponse, error) {
+	coreClient, err := grpc.GetCoreClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.GetTransactionRequest)
+	request.Id = parameter.Id
+	ctx := context.Background()
+	response, err := coreClient.GetTransaction(ctx, request)
 
 	if err != nil {
 		return nil, err
