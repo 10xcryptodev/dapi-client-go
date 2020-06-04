@@ -85,6 +85,22 @@ func main() {
 		}
 	}
 
+	getBlockParameter := new(models.GetBlockParameter)
+	height = 1
+	var heightUint = uint32(height)
+	getBlockParameter.Height = &heightUint
+	getBlock, err := GetBlock(*getBlockParameter)
+	if err != nil {
+		fmt.Printf("getBlock error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getBlock)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getBlock: %s\n", out)
+		}
+	}
+
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -166,6 +182,36 @@ func GetStatus() (*org_dash_platform_dapi_v0.GetStatusResponse, error) {
 	request := new(org_dash_platform_dapi_v0.GetStatusRequest)
 	ctx := context.Background()
 	response, err := coreClient.GetStatus(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func GetBlock(parameter models.GetBlockParameter) (*org_dash_platform_dapi_v0.GetBlockResponse, error) {
+	gRPCconn, err := grpc.GetConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	coreClient := org_dash_platform_dapi_v0.NewCoreClient(gRPCconn)
+	request := new(org_dash_platform_dapi_v0.GetBlockRequest)
+
+	if parameter.Hash != nil {
+		r := new(org_dash_platform_dapi_v0.GetBlockRequest_Hash)
+		r.Hash = *parameter.Hash
+		request.Block = r
+	} else {
+		r := new(org_dash_platform_dapi_v0.GetBlockRequest_Height)
+		r.Height = *parameter.Height
+		request.Block = r
+	}
+
+	ctx := context.Background()
+	response, err := coreClient.GetBlock(ctx, request)
 
 	if err != nil {
 		return nil, err

@@ -7,3 +7,8 @@ type UTXORequestParameter struct {
 	ToHeight   int      `json:"toHeight,omitempty"`
 	Addresses  []string `json:"address"`
 }
+
+type GetBlockParameter struct {
+	Hash   *string `json:"hash,omitempty"`
+	Height *uint32 `json:"height,omitempty"`
+}
