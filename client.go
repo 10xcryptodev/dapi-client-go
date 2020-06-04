@@ -86,9 +86,7 @@ func main() {
 	}
 
 	getBlockParameter := new(models.GetBlockParameter)
-	height = 1
-	var heightUint = uint32(height)
-	getBlockParameter.Height = &heightUint
+	getBlockParameter.Height = uint32(1)
 	getBlock, err := GetBlock(*getBlockParameter)
 	if err != nil {
 		fmt.Printf("getBlock error: %s\n", err)
@@ -101,6 +99,19 @@ func main() {
 		}
 	}
 
+	sendTransactionParameter := new(models.SendTransactionParameter)
+	sendTransactionParameter.Transaction = []byte("020000000123c52118bfc5da0222a569d379ce3e3a9ca18976175785fd45b3f8990341768b000000006b483045022100a3952306ccb38e1eb22d9956ab40744b79e3072621e634e19225ad8a15603e3102201a3724cb9a8216e78139793c953245b0890c207e13af86bb02735f50a5bccad9012103439cfc2b5fab7fe05c0fbf8fa9217707a5bf5badb7c7e6db05bd0fb1231c5c8bfeffffff0200e1f505000000001976a91468b39aad690ffb710b4ba522d742670b763b501988ac1ec34f95010000001976a91445ada709129f7b6381559c8a16f1ec83c0b3ca8c88acb4240000")
+	sendTransaction, err := SendTransaction(*sendTransactionParameter)
+	if err != nil {
+		fmt.Printf("sendTransaction erro: %s\n", err)
+	} else {
+		out, err := json.Marshal(sendTransaction)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("sendTransaction: %s\n", out)
+		}
+	}
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -172,13 +183,12 @@ func GetUTXO(parameter models.UTXORequestParameter) (*models.UTXOResponse, error
 
 //gRPC
 func GetStatus() (*org_dash_platform_dapi_v0.GetStatusResponse, error) {
-	gRPCconn, err := grpc.GetConnection()
+	coreClient, err := grpc.GetCoreClient()
 
 	if err != nil {
 		return nil, err
 	}
 
-	coreClient := org_dash_platform_dapi_v0.NewCoreClient(gRPCconn)
 	request := new(org_dash_platform_dapi_v0.GetStatusRequest)
 	ctx := context.Background()
 	response, err := coreClient.GetStatus(ctx, request)
@@ -191,27 +201,47 @@ func GetStatus() (*org_dash_platform_dapi_v0.GetStatusResponse, error) {
 }
 
 func GetBlock(parameter models.GetBlockParameter) (*org_dash_platform_dapi_v0.GetBlockResponse, error) {
-	gRPCconn, err := grpc.GetConnection()
+	coreClient, err := grpc.GetCoreClient()
 
 	if err != nil {
 		return nil, err
 	}
 
-	coreClient := org_dash_platform_dapi_v0.NewCoreClient(gRPCconn)
 	request := new(org_dash_platform_dapi_v0.GetBlockRequest)
 
-	if parameter.Hash != nil {
+	if len(parameter.Hash) > 0 {
 		r := new(org_dash_platform_dapi_v0.GetBlockRequest_Hash)
-		r.Hash = *parameter.Hash
+		r.Hash = parameter.Hash
 		request.Block = r
 	} else {
 		r := new(org_dash_platform_dapi_v0.GetBlockRequest_Height)
-		r.Height = *parameter.Height
+		r.Height = parameter.Height
 		request.Block = r
 	}
 
 	ctx := context.Background()
 	response, err := coreClient.GetBlock(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func SendTransaction(parameter models.SendTransactionParameter) (*org_dash_platform_dapi_v0.SendTransactionResponse, error) {
+	coreClient, err := grpc.GetCoreClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.SendTransactionRequest)
+	request.Transaction = parameter.Transaction
+	request.AllowHighFees = parameter.AllowHighFees
+	request.BypassLimits = parameter.BypassLimits
+	ctx := context.Background()
+	response, err := coreClient.SendTransaction(ctx, request)
 
 	if err != nil {
 		return nil, err

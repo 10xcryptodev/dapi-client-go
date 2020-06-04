@@ -9,6 +9,12 @@ type UTXORequestParameter struct {
 }
 
 type GetBlockParameter struct {
-	Hash   *string `json:"hash,omitempty"`
-	Height *uint32 `json:"height,omitempty"`
+	Hash   string `json:"hash,omitempty"`
+	Height uint32 `json:"height,omitempty"`
+}
+
+type SendTransactionParameter struct {
+	Transaction   []byte `json:"transaction"`
+	AllowHighFees bool   `json:"allow_high_fees,omitempty"`
+	BypassLimits  bool   `json:"bypass_limits,omitempty"`
 }
