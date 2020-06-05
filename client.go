@@ -126,6 +126,20 @@ func main() {
 			fmt.Printf("getTransaction: %s\n", out)
 		}
 	}
+
+	applyStateTransitionParameter := new(models.ApplyStateTransactionParameter)
+	applyStateTransitionParameter.StateTransition = []byte("pmR0eXBlAmdhY3Rpb25zgQFpZG9jdW1lbnRzgaZkJHJldgFlJHR5cGVocHJlb3JkZXJnJHVzZXJJZHgsR0pNVm51UzdYVFhkaWtnalFyRDR0TjVaSkNYem02eE12R0dyNVNkdGVjcDFoJGVudHJvcHl4InlVOXVta1Q0QnZjQWpQSmpGRVRGNW9CbUgzdEEyU3FKS2drJGNvbnRyYWN0SWR4LDJLZk1jTXhrdEtpbUp4QVpVZVp3WWtGVXNFY0FaaERLRXBRczhHTW5wVXNlcHNhbHRlZERvbWFpbkhhc2h4XjU2MmQ4Y2Q1YTQ1Nzg4ZWU0MWM3YzNiYWNhZGU5ODMwNGY0MTk0MzkyOTA4NDgxMzljOWZiZDU2MTI3NDY1NzM3NDJlNzQ2ODY1NzA2ODY1N2EzMzJlNjQ2MTczNjhpc2lnbmF0dXJleFhIMkxxMW5pM1cyR0Q0TXlqK3lzSHdOMExKRXdHSjExMTRaTHExL0dTalJxakliY2Z0VzcvUkpZVFozeFhnOW0wTTJ4SnVJSEwvMzVGUFVUdUkxUUFBSTg9b3Byb3RvY29sVmVyc2lvbgB0c2lnbmF0dXJlUHVibGljS2V5SWQB")
+	applyStateTransition, err := ApplyStateTransition(*applyStateTransitionParameter)
+	if err != nil {
+		fmt.Printf("applyStateTransition error: %s\n", err)
+	} else {
+		out, err := json.Marshal(applyStateTransition)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("applyStateTransition: %s\n", out)
+		}
+	}
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -275,6 +289,25 @@ func GetTransaction(parameter models.GetTransactionParameter) (*org_dash_platfor
 	request.Id = parameter.Id
 	ctx := context.Background()
 	response, err := coreClient.GetTransaction(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return response, err
+}
+
+func ApplyStateTransition(parameter models.ApplyStateTransactionParameter) (*org_dash_platform_dapi_v0.ApplyStateTransitionResponse, error) {
+	platformClient, err := grpc.GetPlatformClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.ApplyStateTransitionRequest)
+	request.StateTransition = parameter.StateTransition
+	ctx := context.Background()
+	response, err := platformClient.ApplyStateTransition(ctx, request)
 
 	if err != nil {
 		return nil, err

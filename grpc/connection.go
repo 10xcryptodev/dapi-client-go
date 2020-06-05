@@ -27,3 +27,15 @@ func GetCoreClient() (org_dash_platform_dapi_v0.CoreClient, error) {
 
 	return coreClient, nil
 }
+
+func GetPlatformClient() (org_dash_platform_dapi_v0.PlatformClient, error) {
+	gRPCconn, err := GetConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	platformClient := org_dash_platform_dapi_v0.NewPlatformClient(gRPCconn)
+
+	return platformClient, nil
+}

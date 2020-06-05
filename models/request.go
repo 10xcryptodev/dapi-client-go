@@ -22,3 +22,7 @@ type SendTransactionParameter struct {
 type GetTransactionParameter struct {
 	Id string `json:"id"`
 }
+
+type ApplyStateTransactionParameter struct {
+	StateTransition []byte `json:"state_transition"`
+}
