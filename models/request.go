@@ -34,3 +34,13 @@ type GetIdentityParameter struct {
 type GetDataContractParameter struct {
 	Id string `json:"id"`
 }
+
+type GetDocumentsParameter struct {
+	DataContractId string `json:"data_contract_id"`
+	DocumentType   string `json:"document_type"`
+	Where          []byte `json:"where,omitempty"`
+	OrderBy        []byte `json:"order_by,omitempty"`
+	Limit          uint32 `json:"limit,omitempty"`
+	StartAt        uint32 `json:"start_at,omitempty"`
+	StartAfter     uint32 `json:"start_after,omitempty"`
+}

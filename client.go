@@ -381,3 +381,17 @@ func GetDataContract(parameter models.GetDataContractParameter) (*org_dash_platf
 
 	return reponse, err
 }
+
+func GetDocuments(parameter models.GetDocumentsParameter) (*org_dash_platform_dapi_v0.GetDocumentsResponse, error) {
+	platformClient, err := grpc.GetPlatformClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.GetDocumentsRequest)
+	request.DataContractId = parameter.DataContractId
+	request.DocumentType = parameter.DocumentType
+	request.Limit = parameter.Limit
+	request.OrderBy = parameter.OrderBy
+}
