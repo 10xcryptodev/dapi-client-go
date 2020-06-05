@@ -140,6 +140,20 @@ func main() {
 			fmt.Printf("applyStateTransition: %s\n", out)
 		}
 	}
+
+	getIdentityParameter := new(models.GetIdentityParameter)
+	getIdentityParameter.Id = "JCaTiRxm4dRN1GJqoNkpowmvisC7BbgPW48pJ6roLSgw"
+	getIdentity, err := GetIdentity(*getIdentityParameter)
+	if err != nil {
+		fmt.Printf("getIdentity error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getIdentity)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getIdentity: %s\n", out)
+		}
+	}
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -314,4 +328,23 @@ func ApplyStateTransition(parameter models.ApplyStateTransactionParameter) (*org
 	}
 
 	return response, err
+}
+
+func GetIdentity(parameter models.GetIdentityParameter) (*org_dash_platform_dapi_v0.GetIdentityResponse, error) {
+	platformClient, err := grpc.GetPlatformClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.GetIdentityRequest)
+	request.Id = parameter.Id
+	ctx := context.Background()
+	reponse, err := platformClient.GetIdentity(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reponse, err
 }
