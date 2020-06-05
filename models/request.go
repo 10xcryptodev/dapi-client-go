@@ -30,3 +30,7 @@ type ApplyStateTransactionParameter struct {
 type GetIdentityParameter struct {
 	Id string `json:"id"`
 }
+
+type GetDataContractParameter struct {
+	Id string `json:"id"`
+}
