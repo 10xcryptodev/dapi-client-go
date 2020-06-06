@@ -168,6 +168,22 @@ func main() {
 			fmt.Printf("getDataContract: %s\n", out)
 		}
 	}
+
+	getDocumentsParameter := new(models.GetDocumentsParameter)
+	getDocumentsParameter.DataContractId = "5wpZAEWndYcTeuwZpkmSa8s49cHXU5q2DhdibesxFSu8"
+	getDocumentsParameter.DocumentType = "note"
+	getDocumentsParameter.Limit = 1
+	getDocuments, err := GetDocuments(*getDocumentsParameter)
+	if err != nil {
+		fmt.Printf("getDocuments error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getDocuments)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getDocuments: %s\n", out)
+		}
+	}
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -394,4 +410,28 @@ func GetDocuments(parameter models.GetDocumentsParameter) (*org_dash_platform_da
 	request.DocumentType = parameter.DocumentType
 	request.Limit = parameter.Limit
 	request.OrderBy = parameter.OrderBy
+
+	if parameter.StartAfter > 0 {
+		start := new(org_dash_platform_dapi_v0.GetDocumentsRequest_StartAfter)
+		start.StartAfter = parameter.StartAfter
+		request.Start = start
+	}
+
+	if parameter.StartAt > 0 {
+		start := new(org_dash_platform_dapi_v0.GetDocumentsRequest_StartAt)
+		start.StartAt = parameter.StartAt
+		request.Start = start
+	}
+
+	request.Where = parameter.Where
+
+	ctx := context.Background()
+	reponse, err := platformClient.GetDocuments(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reponse, err
+
 }
