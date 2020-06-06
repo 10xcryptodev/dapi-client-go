@@ -39,3 +39,15 @@ func GetPlatformClient() (org_dash_platform_dapi_v0.PlatformClient, error) {
 
 	return platformClient, nil
 }
+
+func GetTransactionStreamClient() (org_dash_platform_dapi_v0.TransactionsFilterStreamClient, error) {
+	gRPCconn, err := GetConnection()
+
+	if err != nil {
+		return nil, err
+	}
+
+	platformClient := org_dash_platform_dapi_v0.NewTransactionsFilterStreamClient(gRPCconn)
+
+	return platformClient, nil
+}

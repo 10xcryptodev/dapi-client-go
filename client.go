@@ -435,3 +435,44 @@ func GetDocuments(parameter models.GetDocumentsParameter) (*org_dash_platform_da
 	return reponse, err
 
 }
+
+func subscribeToTransactionsWithProofsBinding(parameter models.SubscribeToTransactionsWithProofsRequest) (org_dash_platform_dapi_v0.TransactionsFilterStream_SubscribeToTransactionsWithProofsClient, error) {
+	transactionStreamClient, err := grpc.GetTransactionStreamClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := &org_dash_platform_dapi_v0.TransactionsWithProofsRequest{
+		BloomFilter: &org_dash_platform_dapi_v0.BloomFilter{
+			VData:      parameter.BloomFilter.Data,
+			NHashFuncs: parameter.BloomFilter.HashFunc,
+			NTweak:     parameter.BloomFilter.Tweak,
+			NFlags:     parameter.BloomFilter.Flags,
+		},
+	}
+
+	request.Count = uint32(*parameter.Count)
+	request.SendTransactionHashes = *parameter.SendTransactionHashes
+
+	if parameter.FromBlockHash != nil {
+		request.FromBlock = &org_dash_platform_dapi_v0.TransactionsWithProofsRequest_FromBlockHash{
+			FromBlockHash: *parameter.FromBlockHash,
+		}
+	}
+
+	if parameter.FromBlockHeight != nil {
+		request.FromBlock = &org_dash_platform_dapi_v0.TransactionsWithProofsRequest_FromBlockHeight{
+			FromBlockHeight: uint32(*parameter.FromBlockHeight),
+		}
+	}
+
+	ctx := context.Background()
+	reponse, err := transactionStreamClient.SubscribeToTransactionsWithProofs(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reponse, err
+}

@@ -44,3 +44,18 @@ type GetDocumentsParameter struct {
 	StartAt        uint32 `json:"start_at,omitempty"`
 	StartAfter     uint32 `json:"start_after,omitempty"`
 }
+
+type BloomFilterRequest struct {
+	Data     []byte `json:"v_data"`
+	HashFunc uint32 `json:"n_hash_funcs"`
+	Tweak    uint32 `json:"n_tweak"`
+	Flags    uint32 `json:"n_flags"`
+}
+
+type SubscribeToTransactionsWithProofsRequest struct {
+	BloomFilter           BloomFilterRequest `json:"bloom_filter"`
+	Count                 *int               `json:"count,omitempty"`
+	FromBlockHash         *[]byte            `json:"from_block_hash,omitempty"`
+	FromBlockHeight       *int               `json:"from_block_height,omitempty"`
+	SendTransactionHashes *bool              `json:"send_transaction_hashes,omitempty"`
+}
