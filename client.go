@@ -184,6 +184,55 @@ func main() {
 			fmt.Printf("getDocuments: %s\n", out)
 		}
 	}
+
+	subscribeTransactionsParameter := new(models.SubscribeToTransactionsWithProofsParameter)
+	bloomFilter := new(models.BloomFilterParameter)
+	bloomFilter.Data = []byte("")
+	bloomFilter.Flags = 0
+	bloomFilter.Tweak = 0
+	bloomFilter.HashFunc = 11
+
+	subscribeTransactionsParameter.BloomFilter = *bloomFilter
+	subscribeTransactionsParameter.Count = 1
+	subscribeTransactionsParameter.FromBlockHeight = 1
+
+	subscribeTransactions, err := SubscribeToTransactionsWithProofs(*subscribeTransactionsParameter)
+	if err != nil {
+		fmt.Printf("subscribeToTransactionsWithProofs error: %s\n", err)
+	} else {
+		for {
+			r, err := subscribeTransactions.Recv()
+
+			if err != nil {
+				panic(err)
+			}
+
+			transactions := r.GetRawTransactions()
+
+			if transactions != nil {
+				fmt.Println("Transactions:")
+
+				for index, transaction := range transactions.GetTransactions() {
+					fmt.Printf("%d:\t%0X\n", index, transaction)
+				}
+			}
+
+			merkleBlock := r.GetRawMerkleBlock()
+
+			if merkleBlock != nil {
+				fmt.Printf("MerkleBlock: %0X\n", merkleBlock)
+			}
+
+			instantSendLock := r.GetInstantSendLockMessages()
+
+			if instantSendLock != nil {
+				fmt.Println("InstantSendLock:")
+				fmt.Println(instantSendLock)
+			}
+
+		}
+	}
+
 }
 
 func GetAddressSummary(address []string) (*models.AddressSummaryResponse, error) {
@@ -436,7 +485,7 @@ func GetDocuments(parameter models.GetDocumentsParameter) (*org_dash_platform_da
 
 }
 
-func subscribeToTransactionsWithProofsBinding(parameter models.SubscribeToTransactionsWithProofsRequest) (org_dash_platform_dapi_v0.TransactionsFilterStream_SubscribeToTransactionsWithProofsClient, error) {
+func SubscribeToTransactionsWithProofs(parameter models.SubscribeToTransactionsWithProofsParameter) (org_dash_platform_dapi_v0.TransactionsFilterStream_SubscribeToTransactionsWithProofsClient, error) {
 	transactionStreamClient, err := grpc.GetTransactionStreamClient()
 
 	if err != nil {
@@ -452,18 +501,18 @@ func subscribeToTransactionsWithProofsBinding(parameter models.SubscribeToTransa
 		},
 	}
 
-	request.Count = uint32(*parameter.Count)
-	request.SendTransactionHashes = *parameter.SendTransactionHashes
+	request.Count = uint32(parameter.Count)
+	request.SendTransactionHashes = parameter.SendTransactionHashes
 
 	if parameter.FromBlockHash != nil {
 		request.FromBlock = &org_dash_platform_dapi_v0.TransactionsWithProofsRequest_FromBlockHash{
-			FromBlockHash: *parameter.FromBlockHash,
+			FromBlockHash: parameter.FromBlockHash,
 		}
 	}
 
-	if parameter.FromBlockHeight != nil {
+	if parameter.FromBlockHeight > 0 {
 		request.FromBlock = &org_dash_platform_dapi_v0.TransactionsWithProofsRequest_FromBlockHeight{
-			FromBlockHeight: uint32(*parameter.FromBlockHeight),
+			FromBlockHeight: uint32(parameter.FromBlockHeight),
 		}
 	}
 
