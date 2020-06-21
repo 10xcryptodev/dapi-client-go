@@ -203,6 +203,44 @@ func GetIdentity(parameter models.GetIdentityParameter) (*org_dash_platform_dapi
 	return reponse, err
 }
 
+func GetIdentityByFirstPublicKey(parameter models.GetIdentityByFirstPublicKeyParameter) (*org_dash_platform_dapi_v0.GetIdentityByFirstPublicKeyResponse, error) {
+	platformClient, err := grpc.GetPlatformClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.GetIdentityByFirstPublicKeyRequest)
+	request.PublicKeyHash = parameter.PublicKeyHash
+	ctx := context.Background()
+	reponse, err := platformClient.GetIdentityByFirstPublicKey(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reponse, err
+}
+
+func GetIdentityIdByFirstPublicKey(parameter models.GetIdentityIdByFirstPublicKeyParameter) (*org_dash_platform_dapi_v0.GetIdentityIdByFirstPublicKeyResponse, error) {
+	platformClient, err := grpc.GetPlatformClient()
+
+	if err != nil {
+		return nil, err
+	}
+
+	request := new(org_dash_platform_dapi_v0.GetIdentityIdByFirstPublicKeyRequest)
+	request.PublicKeyHash = parameter.PublicKeyHash
+	ctx := context.Background()
+	reponse, err := platformClient.GetIdentityIdByFirstPublicKey(ctx, request)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reponse, err
+}
+
 func GetDataContract(parameter models.GetDataContractParameter) (*org_dash_platform_dapi_v0.GetDataContractResponse, error) {
 	platformClient, err := grpc.GetPlatformClient()
 

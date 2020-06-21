@@ -59,3 +59,11 @@ type SubscribeToTransactionsWithProofsParameter struct {
 	FromBlockHeight       int                  `json:"from_block_height,omitempty"`
 	SendTransactionHashes bool                 `json:"send_transaction_hashes,omitempty"`
 }
+
+type GetIdentityByFirstPublicKeyParameter struct {
+	PublicKeyHash []byte `json:"public_key_hash"`
+}
+
+type GetIdentityIdByFirstPublicKeyParameter struct {
+	PublicKeyHash []byte `json:"public_key_hash"`
+}
