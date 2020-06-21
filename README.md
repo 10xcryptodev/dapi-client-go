@@ -160,6 +160,34 @@ func main() {
 		}
 	}
 
+	getIdentityByFirstPublicKeyParameter := new(models.GetIdentityByFirstPublicKeyParameter)
+	getIdentityByFirstPublicKeyParameter.PublicKeyHash = []byte("4e2736d0eecca645821089eb4b2422544e045655")
+	getIdentityByFirstPublicKey, err := client.GetIdentityByFirstPublicKey(*getIdentityByFirstPublicKeyParameter)
+	if err != nil {
+		fmt.Printf("getIdentityByFirstPublicKey error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getIdentityByFirstPublicKey)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getIdentityByFirstPublicKey: %s\n", out)
+		}
+	}
+
+	getIdentityIdByFirstPublicKeyParameter := new(models.GetIdentityIdByFirstPublicKeyParameter)
+	getIdentityIdByFirstPublicKeyParameter.PublicKeyHash = []byte("4e2736d0eecca645821089eb4b2422544e045655")
+	getIdentityIdByFirstPublicKey, err := client.GetIdentityIdByFirstPublicKey(*getIdentityIdByFirstPublicKeyParameter)
+	if err != nil {
+		fmt.Printf("getIdentityIdByFirstPublicKey error: %s\n", err)
+	} else {
+		out, err := json.Marshal(getIdentityIdByFirstPublicKey)
+		if err != nil {
+			panic(err)
+		} else {
+			fmt.Printf("getIdentityIdByFirstPublicKey: %s\n", out)
+		}
+	}
+
 	getDataContractParameter := new(models.GetDataContractParameter)
 	getDataContractParameter.Id = "5wpZAEWndYcTeuwZpkmSa8s49cHXU5q2DhdibesxFSu8"
 	getDataContract, err := client.GetDataContract(*getDataContractParameter)
